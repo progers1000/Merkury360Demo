@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merkury Consumer 360 - Customer Data Platform Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0066CC;
+            --secondary-color: #00A8E6;
+            --accent-color: #FF6B35;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f8f9fa;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --error-color: #dc3545;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Feature Tabs */
+        .feature-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-button {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-button:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .tab-button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .tab-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .feature-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card h2 svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Identity Resolution Demo */
+        .identity-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .data-source {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 2px dashed var(--border-color);
+        }
+
+        .data-source h3 {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .record {
+            background: white;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .unified-profile {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border: 2px solid var(--primary-color);
+            grid-column: 1 / -1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unified-profile::before {
+            content: '✓ Unified';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Data Quality Metrics */
+        .quality-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Insights Visualization */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0),
+                        linear-gradient(135deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        /* Audience Builder */
+        .audience-builder {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .audience-stats {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* LLM Chat Interface */
+        .chat-interface {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            margin-top: 2rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: var(--light-bg);
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 18px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-content {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            font-size: 1rem;
+        }
+
+        .send-button {
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .send-button:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .identity-demo {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Animation */
+        .success-animation {
+            animation: successPulse 0.5s ease-out;
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2v20M2 12h20"/>
+                    <circle cx="12" cy="12" r="4" fill="currentColor"/>
+                </svg>
+                Merkury Consumer 360
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#demo">Live Demo</a></li>
+                    <li><a href="#contact" class="btn btn-secondary" style="padding: 0.5rem 1.5rem;">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero" id="overview">
+            <h1>Transform Your Customer Data Into Actionable Intelligence</h1>
+            <p>Merkury Consumer 360 unifies disparate data sources, ensures data quality, and enables AI-ready personalization at scale. Build a future-ready data environment that grows with your business.</p>
+            <div style="margin-top: 2rem;">
+                <a href="#demo" class="btn" style="margin-right: 1rem;">Explore Features</a>
+                <a href="#contact" class="btn btn-secondary">Schedule Demo</a>
+            </div>
+        </section>
+
+        <!-- Feature Tabs -->
+        <section id="features">
+            <div class="feature-tabs">
+                <button class="tab-button active" onclick="showTab('identity')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Identity Resolution
+                </button>
+                <button class="tab-button" onclick="showTab('quality')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                    </svg>
+                    Data Quality
+                </button>
+                <button class="tab-button" onclick="showTab('insights')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"/>
+                        <line x1="12" y1="20" x2="12" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    Insights
+                </button>
+                <button class="tab-button" onclick="showTab('activation')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                    Audience Activation
+                </button>
+                <button class="tab-button" onclick="showTab('ai')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                    </svg>
+                    AI & LLM Access
+                </button>
+                <button class="tab-button" onclick="showTab('enrichment')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                    Data Enrichment
+                </button>
+            </div>
+        </section>
+
+        <!-- Content Sections -->
+        <section id="demo">
+            <!-- Identity Resolution -->
+            <div class="content-section active" id="identity-content">
+                <div class="feature-card">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        Identity Resolution
+                    </h2>
+                    <p>Transform fragmented customer records across multiple systems into unified, actionable profiles. Our advanced matching algorithms handle complex scenarios including name variations, address changes, and cross-device identities.</p>
+                    
+                    <div class="identity-demo">
+                        <div class="data-source">
+                            <h3>CRM System</h3>
+                            <div class="record">
+                                <strong>John Smith</strong><br>
+                                Email: jsmith@email.com<br>
+                                Phone: 555-0123
+                            </div>
+                            <div class="record">
+                                <strong>J. Smith</strong><br>
+                                Email: john.smith@work.com<br>
+                                Customer ID: CRM-4567
+                            </div>
+                        </div>
+                        
+                        <div class="data-source">
+                            <h3>E-commerce Platform</h3>
+                            <div class="record">
+                                <strong>Johnny Smith</strong><br>
+                                Email: jsmith@email.com<br>
+                                Last Purchase: 2024-03-15
+                            </div>
+                            <div class="record">
+                                <strong>John S.</strong><br>
+                                Phone: (555) 012-3000<br>
+                                Cart Value: $347
+                            </div>
+                        </div>
+                        
+                        <div class="data-source unified-profile">
+                            <h3>Unified Customer Profile</h3>
+                            <div class="record" style="background: white;">
+                                <strong>John Smith</strong><br>
+                                <strong>Emails:</strong> jsmith@email.com, john.smith@work.com<br>
+                                <strong>Phone:</strong> 555-0123<br>
+                                <strong>Customer IDs:</strong> CRM-4567, EC-789<br>
+                                <strong>Lifetime Value:</strong> $4,567<br>
+                                <strong>Last Interaction:</strong> 2024-03-15<br>
+                                <strong>Confidence Score:</strong> 98.5%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn" onclick="animateUnification()">See Unification Process</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Quality -->
+            <div class="content-section" id="quality-content">
+                <div class="feature-card">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"/>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                        </svg>
+                        Data Quality with Q+ Framework
+                    </h2>
+                    <p>Our proprietary Q+ framework ensures your data meets the highest standards of accuracy, completeness, and consistency. Real-time monitoring and automated cleansing processes maintain data integrity across all touchpoints.</p>
+                    
+                    <div class="quality-metrics">
+                        <div class="metric-card">
+                            <div class="metric-value">98.7%</div>
+                            <div class="metric-label">Data Accuracy</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">94.2%</div>
+                            <div class="metric-label">Completeness Score</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">2.3M</div>
+                            <div class="metric-label">Records Cleansed Daily</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">0.02%</div>
+                            <div class="metric-label">Duplicate Rate</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Q+ Framework Pillars</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px;">
+                            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Validation</h4>
+                            <p style="font-size: 0.9rem;">Real-time format validation, business rule enforcement, and anomaly detection</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px;">
+                            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Standardization</h4>
+                            <p style="font-size: 0.9rem;">Consistent formatting, address normalization, and taxonomy alignment</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px;">
+                            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Enrichment</h4>
+                            <p style="font-size: 0.9rem;">Third-party data append, missing value imputation, and predictive fills</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px;">
+                            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Monitoring</h4>
+                            <p style="font-size: 0.9rem;">Continuous quality scoring, drift detection, and automated alerts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights -->
+            <div class="content-section" id="insights-content">
+                <div class="feature-card">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                        Deep Customer Insights
+                    </h2>
+                    <p>Unlock powerful insights from your unified customer data. Our analytics engine reveals patterns, predicts behaviors, and identifies opportunities across the entire customer journey.</p>
+                    
+                    <div class="insights-grid">
+                        <div class="insight-card">
+                            <h3>Customer Lifetime Value</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="clv-chart" width="300" height="200"></canvas>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.9rem;">Predict future value and identify high-value customer segments</p>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <h3>Churn Prediction</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="churn-chart" width="300" height="200"></canvas>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.9rem;">Identify at-risk customers before they leave</p>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <h3>Cross-Sell Opportunities</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="cross-sell-chart" width="300" height="200"></canvas>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.9rem;">Discover product affinity and recommendation patterns</p>
+                        </div>
+                        
+                        <div class="insight-card">
+                            <h3>Journey Analytics</h3>
+                            <div class="chart-placeholder">
+                                <canvas id="journey-chart" width="300" height="200"></canvas>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.9rem;">Map and optimize customer touchpoints</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audience Activation -->
+            <div class="content-section" id="activation-content">
+                <div class="feature-card">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        Audience Activation
+                    </h2>
+                    <p>Build precise audiences and activate them across all your marketing channels. Our seamless integrations ensure your segments reach the right platforms at the right time.</p>
+                    
+                    <div class="audience-builder">
+                        <h3>Audience Builder</h3>
+                        <div class="filter-group">
+                            <label>Demographics</label>
+                            <select class="filter-select">
+                                <option>Age: 25-34 years</option>
+                                <option>Age: 35-44 years</option>
+                                <option>Age: 45-54 years</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Behavior</label>
+                            <select class="filter-select">
+                                <option>High-value customers (LTV > $1000)</option>
+                                <option>Frequent purchasers (>5 orders/year)</option>
+                                <option>Cart abandoners (last 30 days)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Engagement</label>
+                            <select class="filter-select">
+                                <option>Email engaged (opened in last 30 days)</option>
+                                <option>Website active (visited in last 7 days)</option>
+                                <option>Mobile app users</option>
+                            </select>
+                        </div>
+                        
+                        <div class="audience-stats">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">287,459</div>
+                                <div style="color: var(--text-light);">Estimated Reach</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--success-color);">4.2%</div>
+                                <div style="color: var(--text-light);">Predicted CTR</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--accent-color);">$847K</div>
+                                <div style="color: var(--text-light);">Est. Revenue Impact</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <button class="btn" onclick="activateAudience()">Activate Audience</button>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 3rem; margin-bottom: 1rem;">Supported Platforms</h3>
+                    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <span style="font-size: 2rem;">📧</span>
+                            </div>
+                            <p style="margin-top: 0.5rem;">Email</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <span style="font-size: 2rem;">🌐</span>
+                            </div>
+                            <p style="margin-top: 0.5rem;">Display</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <span style="font-size: 2rem;">📱</span>
+                            </div>
+                            <p style="margin-top: 0.5rem;">Social</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <span style="font-size: 2rem;">🔍</span>
+                            </div>
+                            <p style="margin-top: 0.5rem;">Search</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="width: 80px; height: 80px; background: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                <span style="font-size: 2rem;">💬</span>
+                            </div>
+                            <p style="margin-top: 0.5rem;">SMS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI & LLM Access -->
+            <div class="content-section" id="ai-content">
+                <div class="feature-card">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                        </svg>
+                        AI-Powered Data Access
+                    </h2>
+                    <p>Enable natural language queries on your customer data. Our LLM integration allows business users to ask questions and get instant insights without writing complex queries.</p>
+                    
+                    <div class="chat-interface">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message">
+                                <div class="message-content">
+                                    👋 Hello! I'm your AI assistant. Ask me anything about your customer data.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chat-input" placeholder="Ask about your customer data..." onkeypress="handleChatKeypress(event)">
+                            <button class="send-button" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Example Queries</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px; cursor: pointer;" onclick="setExampleQuery('What percentage of our customers made a purchase in the last 30 days?')">
+                            <p style="font-style: italic;">"What percentage of our customers made a purchase in the last 30 days?"</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px; cursor: pointer;" onclick="setExampleQuery('Show me the top 5 products by revenue this quarter')">
+                            <p style="font-style: italic;">"Show me the top 5 products by revenue this quarter"</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px; cursor: pointer;" onclick="setExampleQuery('Which customer segments have the highest churn risk?')">
+                            <p style="font-style: italic;">"Which customer segments have the highest churn risk?"</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--light-bg); border-radius: 8px; cursor: pointer;" onclick="setExampleQuery('Create an audience of high-value customers who haven\'t purchased recently')">
+                            <p style="font-style: italic;">"Create an audience of high-value customers who haven't purchased recently"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Enrichment -->
+            <div class="content-section" id="enrichment-content">
+                <div class="feature-card">
+                    <h2>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="16"/>
+                            <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                        Merkury Data Enrichment
+                    </h2>
+                    <p>Enhance your first-party data with premium third-party attributes from Merkury Data. Access demographic, psychographic, and behavioral data to create more complete customer profiles.</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem;">
+                        <div style="background: var(--light-bg); border-radius: 8px; padding: 2rem;">
+                            <h3 style="margin-bottom: 1rem;">Your Data</h3>
+                            <div style="font-size: 0.9rem; line-height: 1.8;">
+                                <p><strong>Name:</strong> Sarah Johnson</p>
+                                <p><strong>Email:</strong> sarah.j@email.com</p>
+                                <p><strong>Purchase History:</strong> 3 orders</p>
+                                <p><strong>Total Spend:</strong> $847</p>
+                            </div>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%); border-radius: 8px; padding: 2rem; border: 2px solid var(--primary-color);">
+                            <h3 style="margin-bottom: 1rem;">Enriched Profile with Merkury Data</h3>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; font-size: 0.9rem;">
+                                <div>
+                                    <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Demographics</h4>
+                                    <p><strong>Age Range:</strong> 35-44</p>
+                                    <p><strong>Income:</strong> $75K-$100K</p>
+                                    <p><strong>Education:</strong> Bachelor's Degree</p>
+                                    <p><strong>Household Size:</strong> 3</p>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Psychographics</h4>
+                                    <p><strong>Lifestyle:</strong> Health Conscious</p>
+                                    <p><strong>Interests:</strong> Fitness, Travel</p>
+                                    <p><strong>Shopping Pref:</strong> Quality over Price</p>
+                                    <p><strong>Tech Adoption:</strong> Early Adopter</p>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Behavioral</h4>
+                                    <p><strong>Online Activity:</strong> High</p>
+                                    <p><strong>Channel Pref:</strong> Mobile First</p>
+                                    <p><strong>Purchase Timing:</strong> Weekend</p>
+                                    <p><strong>Brand Loyalty:</strong> Medium-High</p>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">Predictive Scores</h4>
+                                    <p><strong>Purchase Intent:</strong> 87%</p>
+                                    <p><strong>Churn Risk:</strong> 12%</p>
+                                    <p><strong>LTV Potential:</strong> $3,450</p>
+                                    <p><strong>Cross-sell Prob:</strong> 68%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 1rem;">Available Data Categories</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Demographics</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Household</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Financial</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Lifestyle</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Interests</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Purchase Behavior</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Media Consumption</span>
+                            <span style="padding: 0.5rem 1rem; background: var(--primary-color); color: white; border-radius: 20px; font-size: 0.9rem;">Technology</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all content sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab-button');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected content
+            document.getElementById(tabName + '-content').classList.add('active');
+            
+            // Mark selected tab as active
+            event.target.closest('.tab-button').classList.add('active');
+            
+            // Initialize charts if showing insights tab
+            if (tabName === 'insights') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        // Identity unification animation
+        function animateUnification() {
+            const records = document.querySelectorAll('.data-source:not(.unified-profile) .record');
+            const unifiedProfile = document.querySelector('.unified-profile');
+            
+            // Add animation class to records
+            records.forEach((record, index) => {
+                setTimeout(() => {
+                    record.style.transform = 'scale(0.95)';
+                    record.style.opacity = '0.5';
+                }, index * 200);
+            });
+            
+            // Animate unified profile
+            setTimeout(() => {
+                unifiedProfile.classList.add('success-animation');
+                records.forEach(record => {
+                    record.style.transform = 'scale(1)';
+                    record.style.opacity = '1';
+                });
+            }, 1000);
+            
+            // Remove animation class
+            setTimeout(() => {
+                unifiedProfile.classList.remove('success-animation');
+            }, 1500);
+        }
+
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messagesContainer = document.getElementById('chat-messages');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `<div class="message-content">${message}</div>`;
+            messagesContainer.appendChild(userMessage);
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'message';
+                aiMessage.innerHTML = `<div class="message-content">
+                    <span class="loading"></span> Analyzing your data...
+                </div>`;
+                messagesContainer.appendChild(aiMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Show actual response after delay
+                setTimeout(() => {
+                    aiMessage.innerHTML = `<div class="message-content">
+                        ${getAIResponse(message)}
+                    </div>`;
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1500);
+            }, 500);
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function setExampleQuery(query) {
+            document.getElementById('chat-input').value = query;
+            document.getElementById('chat-input').focus();
+        }
+
+        function getAIResponse(query) {
+            const responses = {
+                'purchase': 'Based on your data, 42.7% of customers made a purchase in the last 30 days. This represents a 5.2% increase compared to the previous period. The highest activity was in the 25-34 age segment.',
+                'products': 'Top 5 products by revenue this quarter:\n1. Premium Subscription - $487K\n2. Professional Plan - $342K\n3. Enterprise Suite - $298K\n4. Starter Package - $187K\n5. Add-on Services - $156K',
+                'churn': 'High churn risk segments identified:\n• New customers (0-3 months): 28% risk\n• Low engagement users: 35% risk\n• Single purchase customers: 42% risk\nRecommendation: Target these segments with retention campaigns.',
+                'audience': 'I\'ve created an audience of 12,847 high-value customers (LTV > $1,000) who haven\'t purchased in 60+ days. This segment has an average LTV of $2,456 and responds well to personalized offers. Ready to activate?'
+            };
+            
+            // Simple keyword matching for demo
+            if (query.toLowerCase().includes('purchase') || query.toLowerCase().includes('30 days')) {
+                return responses.purchase;
+            } else if (query.toLowerCase().includes('products') || query.toLowerCase().includes('revenue')) {
+                return responses.products;
+            } else if (query.toLowerCase().includes('churn') || query.toLowerCase().includes('risk')) {
+                return responses.churn;
+            } else if (query.toLowerCase().includes('audience') || query.toLowerCase().includes('high-value')) {
+                return responses.audience;
+            } else {
+                return 'I understand you\'re asking about "' + query + '". Let me analyze your customer data and provide insights. For this demo, try asking about purchase rates, top products, churn risk, or creating audiences.';
+            }
+        }
+
+        // Audience activation
+        function activateAudience() {
+            const button = event.target;
+            button.innerHTML = '<span class="loading"></span> Activating...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = '✓ Activated to 5 Channels';
+                button.style.background = 'var(--success-color)';
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = 'margin-top: 1rem; padding: 1rem; background: #d4edda; color: #155724; border-radius: 8px; text-align: center;';
+                successMsg.textContent = 'Audience successfully activated! Campaigns will begin within 15 minutes.';
+                button.parentElement.appendChild(successMsg);
+            }, 2000);
+        }
+
+        // Initialize charts
+        function initCharts() {
+            // CLV Chart
+            const clvCanvas = document.getElementById('clv-chart');
+            if (clvCanvas && clvCanvas.getContext) {
+                const ctx = clvCanvas.getContext('2d');
+                drawBarChart(ctx, clvCanvas.width, clvCanvas.height);
+            }
+            
+            // Churn Chart
+            const churnCanvas = document.getElementById('churn-chart');
+            if (churnCanvas && churnCanvas.getContext) {
+                const ctx = churnCanvas.getContext('2d');
+                drawLineChart(ctx, churnCanvas.width, churnCanvas.height);
+            }
+            
+            // Cross-sell Chart
+            const crossCanvas = document.getElementById('cross-sell-chart');
+            if (crossCanvas && crossCanvas.getContext) {
+                const ctx = crossCanvas.getContext('2d');
+                drawPieChart(ctx, crossCanvas.width, crossCanvas.height);
+            }
+            
+            // Journey Chart
+            const journeyCanvas = document.getElementById('journey-chart');
+            if (journeyCanvas && journeyCanvas.getContext) {
+                const ctx = journeyCanvas.getContext('2d');
+                drawJourneyChart(ctx, journeyCanvas.width, journeyCanvas.height);
+            }
+        }
+
+        function drawBarChart(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            const data = [2500, 3200, 2800, 4100, 3600];
+            const barWidth = width / (data.length * 2);
+            const maxValue = Math.max(...data);
+            
+            data.forEach((value, index) => {
+                const barHeight = (value / maxValue) * (height - 40);
+                const x = (index * 2 + 0.5) * barWidth;
+                const y = height - barHeight - 20;
+                
+                ctx.fillStyle = '#0066CC';
+                ctx.fillRect(x, y, barWidth, barHeight);
+                
+                ctx.fillStyle = '#666';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`$${value}`, x + barWidth/2, height - 5);
+            });
+        }
+
+        function drawLineChart(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            const points = [
+                {x: 0.1, y: 0.8},
+                {x: 0.3, y: 0.6},
+                {x: 0.5, y: 0.7},
+                {x: 0.7, y: 0.4},
+                {x: 0.9, y: 0.3}
+            ];
+            
+            ctx.strokeStyle = '#FF6B35';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            points.forEach((point, index) => {
+                const x = point.x * width;
+                const y = (1 - point.y) * (height - 20) + 10;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+                
+                // Draw point
+                ctx.fillStyle = '#FF6B35';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            ctx.stroke();
+        }
+
+        function drawPieChart(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) / 2 - 20;
+            
+            const segments = [
+                {value: 35, color: '#0066CC'},
+                {value: 25, color: '#00A8E6'},
+                {value: 20, color: '#FF6B35'},
+                {value: 20, color: '#28a745'}
+            ];
+            
+            let currentAngle = -Math.PI / 2;
+            segments.forEach(segment => {
+                const angle = (segment.value / 100) * Math.PI * 2;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + angle);
+                ctx.closePath();
+                ctx.fillStyle = segment.color;
+                ctx.fill();
+                
+                currentAngle += angle;
+            });
+        }
+
+        function drawJourneyChart(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            const nodes = [
+                {x: 0.2, y: 0.5, label: 'Aware'},
+                {x: 0.4, y: 0.3, label: 'Consider'},
+                {x: 0.6, y: 0.7, label: 'Evaluate'},
+                {x: 0.8, y: 0.5, label: 'Purchase'}
+            ];
+            
+            // Draw connections
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < nodes.length - 1; i++) {
+                ctx.beginPath();
+                ctx.moveTo(nodes[i].x * width, nodes[i].y * height);
+                ctx.lineTo(nodes[i + 1].x * width, nodes[i + 1].y * height);
+                ctx.stroke();
+            }
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const x = node.x * width;
+                const y = node.y * height;
+                
+                ctx.fillStyle = '#0066CC';
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(node.label, x, y);
+            });
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            // Any initialization code
+        });
+    </script>
+</body>
+</html>
